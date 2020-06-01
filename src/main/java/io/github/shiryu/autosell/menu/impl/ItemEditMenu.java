@@ -10,6 +10,7 @@ import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.menu.Menu;
 import io.github.shiryu.autosell.util.Colored;
 import io.github.shiryu.autosell.util.ItemBuilder;
+import io.github.shiryu.autosell.util.ReplaceAllList;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +45,7 @@ public class ItemEditMenu implements Menu {
                 new GuiItem(
                         new ItemBuilder(XMaterial.matchXMaterial(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.setStackSizeItemSection.MATERIAL).orElse(null).parseItem())
                                 .name(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.setStackSizeItemSection.NAME)
-                                .lore(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.setStackSizeItemSection.LORE),
+                                .lore(new ReplaceAllList(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.setStackSizeItemSection.LORE).replaceAll("%stack%", String.valueOf(item.getDefaultStackSize())).value()),
                         (click ->{
                             click.setCancelled(true);
 
@@ -85,15 +86,23 @@ public class ItemEditMenu implements Menu {
                             });
                         })
                 ),
-                2,
+                4,
                 0
         );
+
+        final ReplaceAllList statusLore = new ReplaceAllList(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.statusItemSection.LORE);
+
+        if (item.isEnabled()){
+            statusLore.replaceAll("%status%", AutoSell.getInstance().getConfigs().ENABLED);
+        }else{
+            statusLore.replaceAll("%status%", AutoSell.getInstance().getConfigs().DISABLED);
+        }
 
         pane.addItem(
                 new GuiItem(
                         new ItemBuilder(XMaterial.matchXMaterial(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.statusItemSection.MATERIAL).orElse(null).parseItem())
                                 .name(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.statusItemSection.NAME)
-                                .lore(AutoSell.getInstance().getConfigs().menus.itemEditMenuSection.items.statusItemSection.LORE),
+                                .lore(statusLore.value()),
                         (click ->{
                             click.setCancelled(true);
 
@@ -131,7 +140,7 @@ public class ItemEditMenu implements Menu {
                             });
                         })
                 ),
-                4,
+                6,
                 0
         );
 
