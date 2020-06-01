@@ -1,9 +1,12 @@
 package io.github.shiryu.autosell;
 
+import com.google.gson.Gson;
 import io.github.portlek.database.MapEntry;
 import io.github.portlek.database.SQL;
 import io.github.portlek.database.database.SQLite;
 import io.github.portlek.database.sql.SQLBasic;
+import io.github.shiryu.autosell.api.item.AutoSellItem;
+import io.github.shiryu.autosell.api.player.User;
 import io.github.shiryu.autosell.handle.impl.Namings;
 import io.github.shiryu.autosell.handle.impl.Prices;
 import io.github.shiryu.autosell.hook.impl.vault.VaultHook;
@@ -13,7 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.*;
 
 
 public class AutoSell extends JavaPlugin {
@@ -22,12 +25,15 @@ public class AutoSell extends JavaPlugin {
 
     private AutoSellConfig configs;
 
+    private final Map<UUID, User> users = new HashMap<>();
     private SQL sql;
 
     private Prices prices;
     private Namings namings;
 
     private VaultHook vaultHook;
+
+
 
     @Override
     public void onEnable(){
@@ -44,6 +50,7 @@ public class AutoSell extends JavaPlugin {
 
         loadManagers();
         loadSql();
+        loadUsers();
         loadHooks();
     }
 
@@ -57,6 +64,31 @@ public class AutoSell extends JavaPlugin {
             );
         }
     }
+
+    private void loadUsers(){
+        this.users.clear();
+
+        final Gson gson = new Gson();
+
+        final List<UUID> players = this.sql.listGet("uuid", "uuid", "!=", "x", "autosell");
+
+        players.forEach(player ->{
+            final User user = new User(player);
+
+            final List<AutoSellItem> items = gson.fromJson(
+                    this.sql.get("items", "uuid", "=", player.toString(), "autosell", "x"),
+                    List.class
+            );
+
+            user.setItems(items);
+
+            this.users.put(
+                    player,
+                    user
+            );
+        });
+    }
+
     private void loadHooks(){
         this.vaultHook = new VaultHook();
         this.vaultHook.initiate(this);
@@ -86,6 +118,10 @@ public class AutoSell extends JavaPlugin {
                         )
                 )
         );
+    }
+
+    public Map<UUID, User> getUsers() {
+        return users;
     }
 
     public VaultHook getVaultHook() {

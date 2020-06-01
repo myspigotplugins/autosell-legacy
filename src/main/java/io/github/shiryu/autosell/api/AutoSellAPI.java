@@ -1,6 +1,7 @@
 package io.github.shiryu.autosell.api;
 
 
+import io.github.shiryu.autosell.AutoSell;
 import io.github.shiryu.autosell.api.player.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,24 +14,23 @@ public class AutoSellAPI {
 
     private static AutoSellAPI instance;
 
-    private final Map<UUID, User> users = new HashMap<>();
-
     private AutoSellAPI(){
 
     }
 
     @NotNull
     public Optional<User> findUser(@NotNull final UUID uuid){
-        if (!this.users.containsKey(uuid)){
-            final User user = new User(uuid);
+        final Map<UUID, User> users = AutoSell.getInstance().getUsers();
 
-            this.users.put(uuid, user);
+        if (!users.containsKey(uuid)){
+            final User user = new User(uuid);
+            users.put(uuid, user);
 
             user.save();
         }
 
         return Optional.ofNullable(
-                this.users.get(uuid)
+                users.get(uuid)
         );
     }
 

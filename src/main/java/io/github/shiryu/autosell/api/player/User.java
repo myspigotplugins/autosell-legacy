@@ -13,7 +13,7 @@ public class User {
 
     private final UUID uuid;
 
-    private final List<AutoSellItem> items = new ArrayList<>();
+    private List<AutoSellItem> items = new ArrayList<>();
 
     public User(@NotNull final UUID uuid){
         this.uuid = uuid;
@@ -25,6 +25,10 @@ public class User {
 
     public @NotNull List<AutoSellItem> getItems() {
         return this.items;
+    }
+
+    public void setItems(@NotNull final List<AutoSellItem> items) {
+        this.items = items;
     }
 
     public void save() {
