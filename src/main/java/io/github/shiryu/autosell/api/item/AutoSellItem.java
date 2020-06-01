@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 public class AutoSellItem {
 
     private final Material material;
-    private final int defaultStackSize;
 
+    private int defaultStackSize;
     private boolean enabled = true;
 
     public AutoSellItem(@NotNull final Material material, final int defaultStackSize){
@@ -22,6 +22,10 @@ public class AutoSellItem {
 
     public int getDefaultStackSize() {
         return defaultStackSize;
+    }
+
+    public void setDefaultStackSize(final int defaultStackSize) {
+        this.defaultStackSize = defaultStackSize;
     }
 
     @NotNull

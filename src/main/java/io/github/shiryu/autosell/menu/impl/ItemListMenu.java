@@ -56,6 +56,14 @@ public class ItemListMenu implements Menu {
                                 .lore(replaceAllList.value()),
                                 (click ->{
                                     click.setCancelled(true);
+
+                                    final Player clicked = (Player) click.getWhoClicked();
+
+                                    clicked.closeInventory();
+
+                                    final Menu menu = new ItemEditMenu(item);
+
+                                    menu.openFor(clicked);
                                 })
                         ),
                         (slot % 9) - 1,

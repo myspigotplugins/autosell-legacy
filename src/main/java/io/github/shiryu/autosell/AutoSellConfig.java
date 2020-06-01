@@ -3,6 +3,7 @@ package io.github.shiryu.autosell;
 import io.github.portlek.configs.annotations.*;
 import io.github.portlek.configs.bukkit.BukkitManaged;
 import io.github.portlek.configs.bukkit.BukkitSection;
+import io.github.shiryu.autosell.menu.impl.ItemEditMenu;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +46,12 @@ public class AutoSellConfig extends BukkitManaged {
     @Property(value = "MESSAGES.INVENTORY_FULL")
     public String INVENTORY_FULL = "&bAutoSell&7► &aYour Inventory is full!";
 
+    @Property(value = "MESSAGES.ITEM_SET_STACK")
+    public String ITEM_SET_STACK = "&bAutoSell&7► &aItem stack size successfully changed with &e%stack%";
+
+    @Property(value = "MESSAGES.ITEM_SET_STATUS")
+    public String ITEM_SET_STATUS = "&bAutoSell&7► &aItem status successfully changed to %status%";
+
     /*
         settings
      */
@@ -79,6 +86,64 @@ public class AutoSellConfig extends BukkitManaged {
 
         @Instance
         public ItemListMenuSection itemListMenuSection = new ItemListMenuSection();
+
+        @Instance
+        public ItemEditMenuSection itemEditMenuSection = new ItemEditMenuSection();
+
+        @Section(value = "MENU.ITEM_EDIT")
+        public class ItemEditMenuSection extends BukkitSection{
+
+            @Property
+            public String TITLE = "&b&lAutoSell &7- &eItem Edit";
+
+            @Property
+            public int ROWS = 1;
+
+            @Instance
+            public ItemsSection items = new ItemsSection();
+
+            @Section(value = "MENU.ITEM_EDIT.ITEMS")
+            public class ItemsSection extends BukkitSection{
+
+                @Instance
+                public StatusItemSection statusItemSection = new StatusItemSection();
+
+                @Instance
+                public SetStackSizeItemSection setStackSizeItemSection = new SetStackSizeItemSection();
+
+                @Section(value = "MENU.ITEM_EDIT.ITEMS.STATUS")
+                public class StatusItemSection extends BukkitSection{
+
+                    @Property
+                    public String NAME = "&aReverse the Status";
+
+                    @Property
+                    public List<String> LORE = Arrays.asList(
+                            "",
+                            "&7- &eEnabled: %enabled%"
+                    );
+
+                    @Property
+                    public String MATERIAL = "COMMAND_BLOCK";
+                }
+
+                @Section(value = "MENU.ITEM_EDIT.ITEMS.SET_STACK_SIZE")
+                public class SetStackSizeItemSection extends BukkitSection{
+
+                    @Property
+                    public String NAME = "&aSet the stack size";
+
+                    @Property
+                    public List<String> LORE = Arrays.asList(
+                            "",
+                            "&7- &eStack Size: &a%stack%"
+                    );
+
+                    @Property
+                    public String MATERIAL = "GOLD_INGOT";
+                }
+            }
+        }
 
         @Section(value = "MENU.ITEM_LIST")
         public class ItemListMenuSection extends BukkitSection{

@@ -46,6 +46,26 @@ public class AutoSellAPI {
         );
     }
 
+    @NotNull
+    public void findAndSetStack(@NotNull final User user, @NotNull final String naming, @NotNull final int stack){
+        user.getItems()
+                .stream()
+                .filter(x -> x.getMaterial() == AutoSell.getInstance().getNamings().materialOf(naming))
+                .findAny()
+                .orElse(null)
+                .setDefaultStackSize(stack);
+    }
+
+    @NotNull
+    public void findAndSetEnabled(@NotNull final User user, @NotNull final String naming, @NotNull final boolean enabled){
+        user.getItems()
+                .stream()
+                .filter(x -> x.getMaterial() == AutoSell.getInstance().getNamings().materialOf(naming))
+                .findAny()
+                .orElse(null)
+                .setEnabled(enabled);
+    }
+
 
 
     public static synchronized AutoSellAPI getInstance(){
