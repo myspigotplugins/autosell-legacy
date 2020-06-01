@@ -68,31 +68,38 @@ public class AutoSell extends JavaPlugin {
         }
     }
 
-    private void loadUser(@NotNull final UUID uuid){
-        final User user = new User(uuid);
-    }
     private void loadUsers(){
         this.users.clear();
 
         final Gson gson = new Gson();
 
         final List<UUID> players = this.sql.listGet("uuid", "uuid", "!=", "x", "autosell");
+        final List<String> items = this.sql.listGet("items", "uuid", "!=", "x", "autosell");
 
-        players.forEach(player ->{
-            final User user = new User(player);
+        for (int i = 0; i < players.size(); i++){
+            UUID uuid;
+            final String item = items.get(i);
 
-            final List<AutoSellItem> items = gson.fromJson(
-                    this.sql.get("items", "uuid", "=", player.toString(), "autosell", "x"),
+            try{
+                uuid = players.get(i);
+            }catch (Exception e){
+                continue;
+            }
+
+            final User user = new User(uuid);
+
+            final List<AutoSellItem> xd = gson.fromJson(
+                    item,
                     List.class
             );
 
-            user.setItems(items);
+            user.setItems(xd);
 
             this.users.put(
-                    player,
+                    uuid,
                     user
             );
-        });
+        }
     }
 
     private void loadHooks(){
