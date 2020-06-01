@@ -68,6 +68,9 @@ public class AutoSell extends JavaPlugin {
         }
     }
 
+    private void loadUser(@NotNull final UUID uuid){
+        final User user = new User(uuid);
+    }
     private void loadUsers(){
         this.users.clear();
 
@@ -117,7 +120,7 @@ public class AutoSell extends JavaPlugin {
                         ),
                         new MapEntry<>(
                                 "items",
-                                "LONGTEXT NOT NULL"
+                                "VARCHAR(255) NOT NULL"
                         )
                 )
         );

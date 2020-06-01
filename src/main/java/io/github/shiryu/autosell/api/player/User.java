@@ -45,7 +45,7 @@ public class User {
                         ),
                         new MapEntry<>(
                                 "items",
-                                "LONGTEXT NOT NULL"
+                                "VARCHAR(255) NOT NULL"
                         )
                 )
         );
