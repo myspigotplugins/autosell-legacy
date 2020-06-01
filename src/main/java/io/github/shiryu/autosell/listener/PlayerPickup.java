@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,12 +33,9 @@ public class PlayerPickup implements Listener {
 
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
-        event.setCancelled(true);
-        block.setType(Material.AIR);
-
         final ItemStack hand = player.getItemInHand();
 
-        final List<ItemStack> drops = DropUtil.getInstance().dropsFor(hand, block);
+        final Collection<ItemStack> drops = DropUtil.getInstance().dropsFor(hand, block);
 
         drops.forEach(item ->{
             if (InventoryUtil.getInstance().checkFor(player, item) && !AutoSell.getInstance().getConfigs().BLACK_LIST.contains(item.getType().name())){
@@ -53,6 +51,9 @@ public class PlayerPickup implements Listener {
                 Bukkit.getPluginManager().callEvent(pickupEvent);
             }
         });
+
+        event.setCancelled(true);
+        block.setType(Material.AIR);
 
         player.giveExp(event.getExpToDrop());
     }

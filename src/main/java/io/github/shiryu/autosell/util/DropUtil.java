@@ -1,5 +1,6 @@
 package io.github.shiryu.autosell.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -21,7 +22,7 @@ public class DropUtil {
     }
 
     @NotNull
-    public List<ItemStack> dropsFor(@NotNull final ItemStack hand, @NotNull final Block block){
+    public Collection<ItemStack> dropsFor(@NotNull final ItemStack hand, @NotNull final Block block){
         final Collection<ItemStack> drops = block.getDrops(hand);
 
         if (canGiveBonus(block) && hand.getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS)){
@@ -41,7 +42,8 @@ public class DropUtil {
             return drs;
         }
 
-        return drops.stream().collect(Collectors.toList());
+
+        return drops;
     }
 
     private int getBonus(final int fortuneLevel) {
