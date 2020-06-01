@@ -120,7 +120,7 @@ public class AutoSellConfig extends BukkitManaged {
                     @Property
                     public List<String> LORE = Arrays.asList(
                             "",
-                            "&7- &eEnabled: %enabled%"
+                            "&7- &eStatus: %status%"
                     );
 
                     @Property
