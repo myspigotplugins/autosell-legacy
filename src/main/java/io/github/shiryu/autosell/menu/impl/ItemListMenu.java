@@ -39,6 +39,8 @@ public class ItemListMenu implements Menu {
             int slot = 0;
 
             for (AutoSellItem item : items){
+                slot++;
+
                 ReplaceAllList replaceAllList = new ReplaceAllList(sunglas)
                         .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial()))
                         .replaceAll("%stack%", String.valueOf(item.getDefaultStackSize()));
@@ -70,7 +72,6 @@ public class ItemListMenu implements Menu {
                         slot / 9
                 );
 
-                slot++;
             }
         });
 

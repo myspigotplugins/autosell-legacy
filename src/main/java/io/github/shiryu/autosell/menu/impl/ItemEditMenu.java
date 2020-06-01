@@ -134,5 +134,9 @@ public class ItemEditMenu implements Menu {
                 4,
                 0
         );
+
+        gui.addPane(pane);
+
+        gui.show(player);
     }
 }
