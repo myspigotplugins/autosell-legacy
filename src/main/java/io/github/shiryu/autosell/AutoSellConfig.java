@@ -52,6 +52,10 @@ public class AutoSellConfig extends BukkitManaged {
     @Property(value = "MESSAGES.ITEM_SET_STATUS")
     public String ITEM_SET_STATUS = "&bAutoSell&7► &aItem status successfully changed to %status%";
 
+    @Property(value = "MESSAGES.NAMING_NOT_FOUND")
+    public String NAMING_NOT_FOUND = "&bAutoSell&7► &cNaming not found!";
+
+
     /*
         settings
      */

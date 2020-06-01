@@ -49,6 +49,13 @@ public class PlayerPickup implements Listener {
                 );
 
                 Bukkit.getPluginManager().callEvent(pickupEvent);
+            }else{
+                player.sendMessage(
+                        new Colored(
+                                AutoSell.getInstance().getConfigs().INVENTORY_FULL
+                        ).value()
+                );
+                return;
             }
         });
 

@@ -62,7 +62,7 @@ public class ItemEditMenu implements Menu {
 
                                                 AutoSellAPI.getInstance().findAndSetStack(
                                                         user,
-                                                        reply,
+                                                        AutoSell.getInstance().getNamings().namingOf(item.getMaterial()),
                                                         stack
                                                 );
 

@@ -11,6 +11,7 @@ import io.github.shiryu.autosell.menu.Menu;
 import io.github.shiryu.autosell.util.Colored;
 import io.github.shiryu.autosell.util.ItemBuilder;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -52,9 +53,21 @@ public class MainMenu implements Menu {
                                      .text("Input...")
                                      .onComplete((anvilClicker, reply) ->{
 
+                                         final Material material = AutoSell.getInstance().getNamings().materialOf(reply);
+
+                                         if (material == null){
+                                             player.sendMessage(
+                                                     new Colored(
+                                                             AutoSell.getInstance().getConfigs().NAMING_NOT_FOUND
+                                                     ).value()
+                                             );
+
+                                             anvilClicker.closeInventory();
+                                         }
+
                                          items.add(
                                                  new AutoSellItem(
-                                                         AutoSell.getInstance().getNamings().materialOf(reply),
+                                                         material,
                                                          AutoSell.getInstance().getConfigs().DEFAULT_STACK_SIZE
                                                  )
                                          );
@@ -120,7 +133,6 @@ public class MainMenu implements Menu {
                                         .item(new ItemStack(XMaterial.PAPER.parseMaterial()))
                                         .text("Input...")
                                         .onComplete((anvilClicker, reply) ->{
-
                                             AutoSellAPI.getInstance().findItemFromNaming(user, reply).ifPresent(item ->{
                                                 items.remove(
                                                         item
