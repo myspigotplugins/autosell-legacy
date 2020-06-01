@@ -5,6 +5,7 @@ import io.github.shiryu.autosell.api.AutoSellAPI;
 import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.hook.impl.vault.VaultWrapper;
 import io.github.shiryu.autosell.util.Colored;
+import io.github.shiryu.autosell.util.InventoryUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,8 +21,25 @@ public class PlayerPickup implements Listener {
 
     @EventHandler
     public void playerPickup(final PlayerPickupItemEvent event){
+        event.setCancelled(true);
+
         final Player player = event.getPlayer();
         final ItemStack item = event.getItem().getItemStack();
+
+        event.getItem().remove();
+
+        if (!InventoryUtil.getInstance().checkFor(player, item)){
+            player.sendMessage(
+                    new Colored(
+                            AutoSell.getInstance().getConfigs().INVENTORY_FULL
+                    ).value()
+            );
+            return;
+        }
+
+        player.getInventory().addItem(
+                item
+        );
 
         AutoSellAPI.getInstance().findUser(player.getUniqueId()).ifPresent(user ->{
             final List<AutoSellItem> items = user.getItems()

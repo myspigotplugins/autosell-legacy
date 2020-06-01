@@ -7,6 +7,7 @@ import io.github.portlek.database.database.SQLite;
 import io.github.portlek.database.sql.SQLBasic;
 import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.api.player.User;
+import io.github.shiryu.autosell.command.AutoSellCommand;
 import io.github.shiryu.autosell.handle.impl.Namings;
 import io.github.shiryu.autosell.handle.impl.Prices;
 import io.github.shiryu.autosell.hook.impl.vault.VaultHook;
@@ -47,6 +48,8 @@ public class AutoSell extends JavaPlugin {
         registerListeners(
                 new PlayerPickup()
         );
+
+        getCommand("autosell").setExecutor(new AutoSellCommand());
 
         loadManagers();
         loadSql();

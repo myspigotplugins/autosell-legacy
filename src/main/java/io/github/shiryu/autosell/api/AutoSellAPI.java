@@ -2,6 +2,7 @@ package io.github.shiryu.autosell.api;
 
 
 import io.github.shiryu.autosell.AutoSell;
+import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.api.player.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +32,17 @@ public class AutoSellAPI {
 
         return Optional.ofNullable(
                 users.get(uuid)
+        );
+    }
+
+    @NotNull
+    public Optional<AutoSellItem> findItemFromNaming(@NotNull final User user, @NotNull final String naming){
+        return Optional.ofNullable(
+                user.getItems()
+                .stream()
+                .filter(x -> x.getMaterial() == AutoSell.getInstance().getNamings().materialOf(naming))
+                .findAny()
+                .orElse(null)
         );
     }
 

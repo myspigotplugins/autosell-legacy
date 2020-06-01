@@ -44,6 +44,15 @@ public class Namings implements Manager<Namings.NamingNode> {
     }
 
     @NotNull
+    public Material materialOf(@NotNull final String naming){
+        return this.nodes.stream()
+                .filter(x -> x.getNaming().equals(naming))
+                .findAny()
+                .orElse(null)
+                .getMaterial();
+    }
+
+    @NotNull
     public String namingOf(@NotNull final Material material){
         return this.nodes.stream()
                 .filter(x -> x.getMaterial() == material)
