@@ -9,6 +9,7 @@ import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.menu.Menu;
 import io.github.shiryu.autosell.util.Colored;
 import io.github.shiryu.autosell.util.ItemBuilder;
+import io.github.shiryu.autosell.util.ReplaceAllList;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,14 +34,26 @@ public class ItemListMenu implements Menu {
         AutoSellAPI.getInstance().findUser(player.getUniqueId()).ifPresent(user ->{
             final List<AutoSellItem> items = user.getItems();
 
+            List<String> sunglas = AutoSell.getInstance().getConfigs().menus.itemListMenuSection.items.LORE;
+
             int slot = 0;
 
             for (AutoSellItem item : items){
+                ReplaceAllList replaceAllList = new ReplaceAllList(sunglas)
+                        .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial()))
+                        .replaceAll("%stack%", String.valueOf(item.getDefaultStackSize()));
+
+                if (item.isEnabled()){
+                    replaceAllList.replaceAll("%enabled%", AutoSell.getInstance().getConfigs().ENABLED);
+                }else{
+                    replaceAllList.replaceAll("%enabled%", AutoSell.getInstance().getConfigs().DISABLED);
+                }
+
                 pane.addItem(
                         new GuiItem(
                                 new ItemBuilder(item.getMaterial())
-                                .name(AutoSell.getInstance().getConfigs().menus.itemListMenuSection.items.NAME)
-                                .lore(AutoSell.getInstance().getConfigs().menus.itemListMenuSection.items.LORE),
+                                .name(AutoSell.getInstance().getConfigs().menus.itemListMenuSection.items.NAME.replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial())))
+                                .lore(replaceAllList.value()),
                                 (click ->{
                                     click.setCancelled(true);
                                 })

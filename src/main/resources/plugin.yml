@@ -2,6 +2,7 @@ name: AutoSell
 authors: [Shiryu]
 version: 1.0
 main: io.github.shiryu.autosell.AutoSell
+api-version: 1.15
 
 commands:
   autosell:

@@ -37,6 +37,10 @@ public class PlayerPickup implements Listener {
             return;
         }
 
+        if (AutoSell.getInstance().getConfigs().BLACK_LIST.contains(item.getType().name())){
+            return;
+        }
+
         player.getInventory().addItem(
                 item
         );

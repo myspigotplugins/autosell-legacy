@@ -51,6 +51,18 @@ public class AutoSellConfig extends BukkitManaged {
     @Property(value = "SETTINGS.DEFAULT_STACK_SIZE")
     public int DEFAULT_STACK_SIZE = 64;
 
+    @Property(value = "SETTINGS.AUTO_PICKUP_BLACKLIST")
+    public List<String> BLACK_LIST = Arrays.asList(
+            "ICE",
+            "PACKET_ICE"
+    );
+
+    @Property(value = "SETTINGS.BOOLS.ENABLED")
+    public String ENABLED = "&aEnabled";
+
+    @Property(value = "SETTINGS.BOOLS.DISABLED")
+    public String DISABLED = "&cDisabled";
+
     /*
         menus
      */

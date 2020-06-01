@@ -47,6 +47,7 @@ public class MainMenu implements Menu {
                              final List<AutoSellItem> items = user.getItems();
 
                              AnvilGUI anvil = new AnvilGUI.Builder()
+                                     .plugin(AutoSell.getInstance())
                                      .item(new ItemStack(XMaterial.PAPER.parseMaterial()))
                                      .text("Input...")
                                      .onComplete((anvilClicker, reply) ->{
@@ -115,6 +116,7 @@ public class MainMenu implements Menu {
                                 final List<AutoSellItem> items = user.getItems();
 
                                 AnvilGUI anvil = new AnvilGUI.Builder()
+                                        .plugin(AutoSell.getInstance())
                                         .item(new ItemStack(XMaterial.PAPER.parseMaterial()))
                                         .text("Input...")
                                         .onComplete((anvilClicker, reply) ->{
