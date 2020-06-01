@@ -86,7 +86,7 @@ public class ItemEditMenu implements Menu {
                             });
                         })
                 ),
-                4,
+                3,
                 0
         );
 
@@ -140,7 +140,7 @@ public class ItemEditMenu implements Menu {
                             });
                         })
                 ),
-                6,
+                5,
                 0
         );
 
