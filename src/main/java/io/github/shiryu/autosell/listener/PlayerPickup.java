@@ -2,14 +2,20 @@ package io.github.shiryu.autosell.listener;
 
 import io.github.shiryu.autosell.AutoSell;
 import io.github.shiryu.autosell.api.AutoSellAPI;
+import io.github.shiryu.autosell.api.event.type.AutoPickupEvent;
 import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.hook.impl.vault.VaultWrapper;
 import io.github.shiryu.autosell.util.Colored;
+import io.github.shiryu.autosell.util.DropUtil;
 import io.github.shiryu.autosell.util.InventoryUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -20,30 +26,43 @@ import java.util.stream.Collectors;
 public class PlayerPickup implements Listener {
 
     @EventHandler
-    public void playerPickup(final PlayerPickupItemEvent event){
+    public void playerBreak(final BlockBreakEvent event){
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
+
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+
+        event.setCancelled(true);
+        block.setType(Material.AIR);
+
+        final ItemStack hand = player.getItemInHand();
+
+        final List<ItemStack> drops = DropUtil.getInstance().dropsFor(hand, block);
+
+        drops.forEach(item ->{
+            if (InventoryUtil.getInstance().checkFor(player, item) && !AutoSell.getInstance().getConfigs().BLACK_LIST.contains(item.getType().name())){
+                player.getInventory().addItem(
+                        item
+                );
+
+                final AutoPickupEvent pickupEvent = new AutoPickupEvent(
+                        player,
+                        item
+                );
+
+                Bukkit.getPluginManager().callEvent(pickupEvent);
+            }
+        });
+
+        player.giveExp(event.getExpToDrop());
+    }
+
+    @EventHandler
+    public void playerPickup(final AutoPickupEvent event){
         event.setCancelled(true);
 
         final Player player = event.getPlayer();
-        final ItemStack item = event.getItem().getItemStack();
-
-        event.getItem().remove();
-
-        if (!InventoryUtil.getInstance().checkFor(player, item)){
-            player.sendMessage(
-                    new Colored(
-                            AutoSell.getInstance().getConfigs().INVENTORY_FULL
-                    ).value()
-            );
-            return;
-        }
-
-        if (AutoSell.getInstance().getConfigs().BLACK_LIST.contains(item.getType().name())){
-            return;
-        }
-
-        player.getInventory().addItem(
-                item
-        );
+        final ItemStack item = event.getItem();
 
         AutoSellAPI.getInstance().findUser(player.getUniqueId()).ifPresent(user ->{
             final List<AutoSellItem> items = user.getItems()
