@@ -1,11 +1,11 @@
 package io.github.shiryu.autosell.api.player;
 
-import com.google.gson.Gson;
-import io.github.portlek.database.MapEntry;
-import io.github.portlek.database.SQL;
 import io.github.shiryu.autosell.AutoSell;
+import io.github.shiryu.autosell.api.AutoSellAPI;
 import io.github.shiryu.autosell.api.item.AutoSellItem;
-import org.bukkit.Bukkit;
+import io.github.shiryu.autosell.util.FileUtil;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -35,30 +35,27 @@ public class User {
     public void save() {
         if (items.size() == 0) return;
 
-        final Gson gson = new Gson();
-        final SQL sql = AutoSell.getInstance().getSql();
+        AutoSellAPI.getInstance().findPlayerDirectory(this.uuid).ifPresent(file ->{
+            final FileConfiguration config = FileUtil.getInstance().loadFile(file);
 
-        System.out.println(sql.getDatabase().isConnected());
+            if (config.get("items") == null) config.createSection("items");
 
-        if (!sql.exists("uuid", this.uuid.toString(), "autosell")){
-            sql.insertData(
-                    "autosell",
-                    Arrays.asList(
-                            new MapEntry<>(
-                                    "uuid",
-                                    this.uuid.toString()
-                            ),
-                            new MapEntry<>(
-                                    "items",
-                                    gson.toJson(this.items)
-                            )
-                    )
-            );
+            final ConfigurationSection section = config.getConfigurationSection("items");
 
-            return;
-        }
+            for (int i = 0; i < this.items.size(); i++){
+                try{
+                    AutoSellItem item = this.items.get(i);
 
-        sql.set("items", gson.toJson(this.items), "uuid", "=", this.uuid.toString(), "autosell");
+                    section.set(i + ".material", item.getMaterial().name());
+                    section.set(i + ".stackSize", item.getDefaultStackSize());
+                    section.set(i + ".enabled", item.isEnabled());
+                }catch (Exception e){
+                    continue;
+                }
+            }
 
+            FileUtil.getInstance().saveFile(file, config);
+            FileUtil.getInstance().loadFile(file);
+        });
     }
 }

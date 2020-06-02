@@ -4,14 +4,17 @@ package io.github.shiryu.autosell.api;
 import io.github.shiryu.autosell.AutoSell;
 import io.github.shiryu.autosell.api.item.AutoSellItem;
 import io.github.shiryu.autosell.api.player.User;
+import io.github.shiryu.autosell.util.FileUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.FileHandler;
 
 public class AutoSellAPI {
 
@@ -77,6 +80,15 @@ public class AutoSellAPI {
                 .findAny()
                 .orElse(null)
                 .setEnabled(enabled);
+    }
+
+    @NotNull
+    public Optional<File> findPlayerDirectory(@NotNull final UUID uuid){
+        final File playersDir = FileUtil.getInstance().createDirectoryIfDoNotExists("/players/", AutoSell.getInstance().getDataFolder());
+
+        return Optional.ofNullable(
+                FileUtil.getInstance().getFile(uuid.toString() + ".yml", playersDir)
+        );
     }
 
 
