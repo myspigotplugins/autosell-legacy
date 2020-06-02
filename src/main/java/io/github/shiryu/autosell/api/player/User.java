@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 
 public class User {
@@ -35,27 +36,27 @@ public class User {
     public void save() {
         if (items.size() == 0) return;
 
-        AutoSellAPI.getInstance().findPlayerDirectory(this.uuid).ifPresent(file ->{
-            final FileConfiguration config = FileUtil.getInstance().loadFile(file);
+        final File file = AutoSellAPI.getInstance().findPlayerDirectory(this.uuid);
 
-            if (config.get("items") == null) config.createSection("items");
+        final FileConfiguration config = FileUtil.getInstance().loadFile(file);
 
-            final ConfigurationSection section = config.getConfigurationSection("items");
+        if (config.get("items") == null) config.createSection("items");
 
-            for (int i = 0; i < this.items.size(); i++){
-                try{
-                    AutoSellItem item = this.items.get(i);
+        final ConfigurationSection section = config.getConfigurationSection("items");
 
-                    section.set(i + ".material", item.getMaterial().name());
-                    section.set(i + ".stackSize", item.getDefaultStackSize());
-                    section.set(i + ".enabled", item.isEnabled());
-                }catch (Exception e){
-                    continue;
-                }
+        for (int i = 0; i < this.items.size(); i++){
+            try{
+                AutoSellItem item = this.items.get(i);
+
+                section.set(i + ".material", item.getMaterial().name());
+                section.set(i + ".stackSize", item.getDefaultStackSize());
+                section.set(i + ".enabled", item.isEnabled());
+            }catch (Exception e){
+                continue;
             }
+        }
 
-            FileUtil.getInstance().saveFile(file, config);
-            FileUtil.getInstance().loadFile(file);
-        });
+        FileUtil.getInstance().saveFile(file, config);
+        FileUtil.getInstance().loadFile(file);
     }
 }

@@ -83,12 +83,10 @@ public class AutoSellAPI {
     }
 
     @NotNull
-    public Optional<File> findPlayerDirectory(@NotNull final UUID uuid){
+    public File findPlayerDirectory(@NotNull final UUID uuid){
         final File playersDir = FileUtil.getInstance().createDirectoryIfDoNotExists("/players/", AutoSell.getInstance().getDataFolder());
 
-        return Optional.ofNullable(
-                FileUtil.getInstance().getFile(uuid.toString() + ".yml", playersDir)
-        );
+        return FileUtil.getInstance().createFileIfDoNotExists(uuid.toString() + ".yml", playersDir);
     }
 
 
