@@ -55,6 +55,9 @@ public class AutoSellConfig extends BukkitManaged {
     @Property(value = "MESSAGES.NAMING_NOT_FOUND")
     public String NAMING_NOT_FOUND = "&bAutoSell&7► &cNaming not found!";
 
+    @Property(value = "MESSAGES.ITEM_ALREADY_EXISTS")
+    public String ITEM_ALREADY_EXIST = "&bAutoSell&7► &cThis material is already exists.";
+
 
     /*
         settings
@@ -73,6 +76,12 @@ public class AutoSellConfig extends BukkitManaged {
 
     @Property(value = "SETTINGS.BOOLS.DISABLED")
     public String DISABLED = "&cDisabled";
+
+    @Property(value = "AUTO_SAVE.ENABLED")
+    public boolean AUTO_SAVE = false;
+
+    @Property(value = "AUTO_SAVE.TIME")
+    public int AUTO_SAVE_TIME = 60;
 
     /*
         menus

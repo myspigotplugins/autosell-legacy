@@ -99,7 +99,7 @@ public class PlayerPickup implements Listener {
                             player.sendMessage(
                                     new Colored(
                                             AutoSell.getInstance().getConfigs().ITEM_SELL
-                                            .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(x.getMaterial()))
+                                            .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(x.getMaterial()).orElse(""))
                                             .replaceAll("%price%", String.valueOf(money))
                                     ).value()
                             );

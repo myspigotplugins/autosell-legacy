@@ -5,6 +5,7 @@ import io.github.portlek.database.MapEntry;
 import io.github.portlek.database.SQL;
 import io.github.shiryu.autosell.AutoSell;
 import io.github.shiryu.autosell.api.item.AutoSellItem;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -32,23 +33,12 @@ public class User {
     }
 
     public void save() {
+        if (items.size() == 0) return;
+
         final Gson gson = new Gson();
         final SQL sql = AutoSell.getInstance().getSql();
 
-
-        sql.createTable(
-                "autosell",
-                Arrays.asList(
-                        new MapEntry<>(
-                                "uuid",
-                                "VARCHAR(128) NOT NULL"
-                        ),
-                        new MapEntry<>(
-                                "items",
-                                "VARCHAR(255) NOT NULL"
-                        )
-                )
-        );
+        System.out.println(sql.getDatabase().isConnected());
 
         if (!sql.exists("uuid", this.uuid.toString(), "autosell")){
             sql.insertData(
@@ -64,8 +54,11 @@ public class User {
                             )
                     )
             );
+
+            return;
         }
 
         sql.set("items", gson.toJson(this.items), "uuid", "=", this.uuid.toString(), "autosell");
+
     }
 }

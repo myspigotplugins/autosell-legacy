@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Namings implements Manager<Namings.NamingNode> {
@@ -44,21 +45,31 @@ public class Namings implements Manager<Namings.NamingNode> {
     }
 
     @NotNull
-    public Material materialOf(@NotNull final String naming){
-        return this.nodes.stream()
+    public Optional<Material> materialOf(@NotNull final String naming){
+        final NamingNode node = this.nodes.stream()
                 .filter(x -> x.getNaming().equals(naming))
                 .findAny()
-                .orElse(null)
-                .getMaterial();
+                .orElse(null);
+
+        if (node == null) return Optional.empty();
+
+        return Optional.ofNullable(
+                node.getMaterial() == null ? Material.AIR : node.getMaterial()
+        );
     }
 
     @NotNull
-    public String namingOf(@NotNull final Material material){
-        return this.nodes.stream()
+    public Optional<String> namingOf(@NotNull final Material material){
+        final NamingNode node = this.nodes.stream()
                 .filter(x -> x.getMaterial() == material)
                 .findAny()
-                .orElse(null)
-                .getNaming();
+                .orElse(null);
+
+        if (node == null) return Optional.empty();
+
+        return Optional.ofNullable(
+                node.getNaming() == null ? "" : node.getNaming()
+        );
     }
 
     @Override

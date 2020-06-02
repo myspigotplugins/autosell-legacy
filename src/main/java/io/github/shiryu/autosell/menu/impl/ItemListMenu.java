@@ -42,7 +42,7 @@ public class ItemListMenu implements Menu {
                 slot++;
 
                 ReplaceAllList replaceAllList = new ReplaceAllList(sunglas)
-                        .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial()))
+                        .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial()).orElse(""))
                         .replaceAll("%stack%", String.valueOf(item.getDefaultStackSize()));
 
                 if (item.isEnabled()){
@@ -54,7 +54,7 @@ public class ItemListMenu implements Menu {
                 pane.addItem(
                         new GuiItem(
                                 new ItemBuilder(item.getMaterial())
-                                .name(AutoSell.getInstance().getConfigs().menus.itemListMenuSection.items.NAME.replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial())))
+                                .name(AutoSell.getInstance().getConfigs().menus.itemListMenuSection.items.NAME.replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(item.getMaterial()).orElse("")))
                                 .lore(replaceAllList.value()),
                                 (click ->{
                                     click.setCancelled(true);

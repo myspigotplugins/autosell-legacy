@@ -60,22 +60,35 @@ public class ItemEditMenu implements Menu {
                                             try{
                                                 final int stack = Integer.parseInt(reply);
 
-                                                AutoSellAPI.getInstance().findAndSetStack(
-                                                        user,
-                                                        AutoSell.getInstance().getNamings().namingOf(item.getMaterial()),
-                                                        stack
-                                                );
+                                                final String naming = AutoSell.getInstance().getNamings().namingOf(item.getMaterial()).orElse(null);
 
-                                                user.save();
+                                                if (naming == null){
+                                                    player.sendMessage(
+                                                            new Colored(
+                                                                    AutoSell.getInstance().getConfigs().NAMING_NOT_FOUND
+                                                            ).value()
+                                                    );
 
-                                                anvilClicker.closeInventory();
+                                                    anvilClicker.closeInventory();
+                                                }else{
+                                                    AutoSellAPI.getInstance().findAndSetStack(
+                                                            user,
+                                                            naming,
+                                                            stack
+                                                    );
 
-                                                anvilClicker.sendMessage(
-                                                        new Colored(
-                                                                AutoSell.getInstance().getConfigs().ITEM_SET_STACK
-                                                                .replaceAll("%stack%", String.valueOf(stack))
-                                                        ).value()
-                                                );
+                                                    user.save();
+
+                                                    anvilClicker.closeInventory();
+
+                                                    anvilClicker.sendMessage(
+                                                            new Colored(
+                                                                    AutoSell.getInstance().getConfigs().ITEM_SET_STACK
+                                                                            .replaceAll("%stack%", String.valueOf(stack))
+                                                            ).value()
+                                                    );
+                                                }
+
                                             }catch(NumberFormatException ex){
                                                 anvilClicker.closeInventory();
                                             }
@@ -113,30 +126,33 @@ public class ItemEditMenu implements Menu {
 
                                 final boolean set = !current;
 
-                                AutoSellAPI.getInstance().findAndSetEnabled(
-                                        user,
-                                        AutoSell.getInstance().getNamings().namingOf(item.getMaterial()),
-                                        set
-                                );
+                                AutoSell.getInstance().getNamings().namingOf(item.getMaterial()).ifPresent(naming ->{
+                                    AutoSellAPI.getInstance().findAndSetEnabled(
+                                            user,
+                                            naming,
+                                            set
+                                    );
 
-                                user.save();
+                                    user.save();
 
-                                clicked.closeInventory();
+                                    clicked.closeInventory();
 
-                                String message = AutoSell.getInstance().getConfigs().ITEM_SET_STATUS;
+                                    String message = AutoSell.getInstance().getConfigs().ITEM_SET_STATUS;
 
 
-                                if (set){
-                                    message = message.replaceAll("%status%", AutoSell.getInstance().getConfigs().ENABLED);
-                                }else{
-                                    message = message.replaceAll("%status%", AutoSell.getInstance().getConfigs().DISABLED);
-                                }
+                                    if (set){
+                                        message = message.replaceAll("%status%", AutoSell.getInstance().getConfigs().ENABLED);
+                                    }else{
+                                        message = message.replaceAll("%status%", AutoSell.getInstance().getConfigs().DISABLED);
+                                    }
 
-                                clicked.sendMessage(
-                                        new Colored(
-                                                message
-                                        ).value()
-                                );
+                                    clicked.sendMessage(
+                                            new Colored(
+                                                    message
+                                            ).value()
+                                    );
+                                });
+
                             });
                         })
                 ),

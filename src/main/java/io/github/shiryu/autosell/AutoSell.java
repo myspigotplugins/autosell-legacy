@@ -51,10 +51,26 @@ public class AutoSell extends JavaPlugin {
 
         getCommand("autosell").setExecutor(new AutoSellCommand());
 
+        if (configs.AUTO_SAVE){
+            getServer().getScheduler().runTaskTimer(
+                    this,
+                    () ->{
+                        this.users.values().forEach(User::save);
+                    },
+                    configs.AUTO_SAVE_TIME * 20L,
+                    configs.AUTO_SAVE_TIME * 20L
+            );
+        }
+
         loadManagers();
         loadSql();
         loadUsers();
         loadHooks();
+    }
+
+    @Override
+    public void onDisable(){
+        this.sql.getDatabase().disconnect();
     }
 
     private void registerListeners(final Listener... listeners){
@@ -69,19 +85,23 @@ public class AutoSell extends JavaPlugin {
     }
 
     private void loadUsers(){
-        this.users.clear();
-
         final Gson gson = new Gson();
 
-        final List<UUID> players = this.sql.listGet("uuid", "uuid", "!=", "x", "autosell");
-        final List<String> items = this.sql.listGet("items", "uuid", "!=", "x", "autosell");
+        this.users.clear();
+
+        final List<String> players = this.sql.listGet("uuid", "uuid", "!=", "x", "autosell");
+        final List<String> items =  this.sql.listGet("items", "uuid", "!=", "x", "autosell");
+
+        System.out.println(players.size());
+
+        int counter = 0;
 
         for (int i = 0; i < players.size(); i++){
             UUID uuid;
-            final String item = items.get(i);
+            String item = items.get(i);
 
             try{
-                uuid = players.get(i);
+                uuid = UUID.fromString(players.get(i));
             }catch (Exception e){
                 continue;
             }
@@ -99,7 +119,12 @@ public class AutoSell extends JavaPlugin {
                     uuid,
                     user
             );
+
+            counter++;
         }
+
+
+        System.out.println("[autosell] " + counter + " user has been loaded!");
     }
 
     private void loadHooks(){
@@ -116,17 +141,21 @@ public class AutoSell extends JavaPlugin {
     }
 
     private void loadSql(){
-        this.sql = new SQLBasic(new SQLite(this, "autosell.db"));
+        final SQLite lite = new SQLite(this, "autosell.db");
+
+        lite.connect();
+
+        this.sql = new SQLBasic(lite);
 
         this.sql.createTable(
                 "autosell",
                 Arrays.asList(
                         new MapEntry<>(
-                                "uuid",
+                                "'uuid'",
                                 "VARCHAR(128) NOT NULL"
                         ),
                         new MapEntry<>(
-                                "items",
+                                "'items'",
                                 "VARCHAR(255) NOT NULL"
                         )
                 )
@@ -151,7 +180,7 @@ public class AutoSell extends JavaPlugin {
 
     @NotNull
     public SQL getSql() {
-        return sql;
+        return this.sql;
     }
 
     public AutoSellConfig getConfigs() {

@@ -52,8 +52,7 @@ public class MainMenu implements Menu {
                                      .item(new ItemStack(XMaterial.PAPER.parseMaterial()))
                                      .text("Input...")
                                      .onComplete((anvilClicker, reply) ->{
-
-                                         final Material material = AutoSell.getInstance().getNamings().materialOf(reply);
+                                         final Material material = AutoSell.getInstance().getNamings().materialOf(reply).orElse(null);
 
                                          if (material == null){
                                              player.sendMessage(
@@ -63,26 +62,38 @@ public class MainMenu implements Menu {
                                              );
 
                                              anvilClicker.closeInventory();
+                                         }else{
+                                             if (items.stream().anyMatch(itemke -> itemke.getMaterial() == material)){
+                                                 player.sendMessage(
+                                                         new Colored(
+                                                                 AutoSell.getInstance().getConfigs().ITEM_ALREADY_EXIST
+                                                         ).value()
+                                                 );
+
+                                                 anvilClicker.closeInventory();
+                                             }else{
+                                                 items.add(
+                                                         new AutoSellItem(
+                                                                 material,
+                                                                 AutoSell.getInstance().getConfigs().DEFAULT_STACK_SIZE
+                                                         )
+                                                 );
+
+                                                 user.setItems(items);
+
+                                                 user.save();
+
+                                                 anvilClicker.closeInventory();
+
+                                                 anvilClicker.sendMessage(
+                                                         new Colored(
+                                                                 AutoSell.getInstance().getConfigs().ITEM_CREATED
+                                                         ).value()
+                                                 );
+                                             }
                                          }
 
-                                         items.add(
-                                                 new AutoSellItem(
-                                                         material,
-                                                         AutoSell.getInstance().getConfigs().DEFAULT_STACK_SIZE
-                                                 )
-                                         );
 
-                                         user.setItems(items);
-
-                                         user.save();
-
-                                         anvilClicker.closeInventory();
-
-                                         anvilClicker.sendMessage(
-                                                 new Colored(
-                                                         AutoSell.getInstance().getConfigs().ITEM_CREATED
-                                                 ).value()
-                                         );
 
                                          return AnvilGUI.Response.text(reply);
                                      })
@@ -142,15 +153,14 @@ public class MainMenu implements Menu {
 
                                                 user.save();
 
-                                                anvilClicker.closeInventory();
-
-
                                                 anvilClicker.sendMessage(
                                                         new Colored(
                                                                 AutoSell.getInstance().getConfigs().ITEM_DELETED
                                                         ).value()
                                                 );
                                             });
+
+                                            anvilClicker.closeInventory();
 
                                             return AnvilGUI.Response.text(reply);
                                         })
