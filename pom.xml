@@ -6,7 +6,7 @@
 
     <groupId>io.github.shiryu.autosell</groupId>
     <artifactId>autosell</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
 
     <build>
         <plugins>
@@ -106,12 +106,12 @@
         <dependency>
             <groupId>com.github.stefvanschie.inventoryframework</groupId>
             <artifactId>IF</artifactId>
-            <version>0.5.19</version>
+            <version>0.6.1</version>
         </dependency>
         <dependency>
-            <groupId>com.github.WesJD</groupId>
-            <artifactId>AnvilGUI</artifactId>
-            <version>61aa6d8080</version>
+            <groupId>com.github.WesJD.AnvilGUI</groupId>
+            <artifactId>anvilgui</artifactId>
+            <version>ef71db62ec</version>
         </dependency>
     </dependencies>
 
