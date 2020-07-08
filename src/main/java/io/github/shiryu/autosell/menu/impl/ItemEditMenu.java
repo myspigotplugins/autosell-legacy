@@ -71,22 +71,31 @@ public class ItemEditMenu implements Menu {
 
                                                     anvilClicker.closeInventory();
                                                 }else{
-                                                    AutoSellAPI.getInstance().findAndSetStack(
-                                                            user,
-                                                            naming,
-                                                            stack
-                                                    );
+                                                    if (stack < AutoSell.getInstance().getConfigs().DEFAULT_STACK_SIZE){
+                                                        anvilClicker.sendMessage(
+                                                                new Colored(
+                                                                        AutoSell.getInstance().getConfigs().DEFAULT_SIZE_ERROR
+                                                                ).value()
+                                                        );
+                                                        anvilClicker.closeInventory();
+                                                    }else{
+                                                        AutoSellAPI.getInstance().findAndSetStack(
+                                                                user,
+                                                                naming,
+                                                                stack
+                                                        );
 
-                                                    user.save();
+                                                        user.save();
 
-                                                    anvilClicker.closeInventory();
+                                                        anvilClicker.closeInventory();
 
-                                                    anvilClicker.sendMessage(
-                                                            new Colored(
-                                                                    AutoSell.getInstance().getConfigs().ITEM_SET_STACK
-                                                                            .replaceAll("%stack%", String.valueOf(stack))
-                                                            ).value()
-                                                    );
+                                                        anvilClicker.sendMessage(
+                                                                new Colored(
+                                                                        AutoSell.getInstance().getConfigs().ITEM_SET_STACK
+                                                                                .replaceAll("%stack%", String.valueOf(stack))
+                                                                ).value()
+                                                        );
+                                                    }
                                                 }
 
                                             }catch(NumberFormatException ex){

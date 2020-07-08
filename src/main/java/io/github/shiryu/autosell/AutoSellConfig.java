@@ -58,6 +58,9 @@ public class AutoSellConfig extends BukkitManaged {
     @Property(value = "MESSAGES.ITEM_ALREADY_EXISTS")
     public String ITEM_ALREADY_EXIST = "&bAutoSell&7► &cThis material is already exists.";
 
+    @Property(value = "MESSAGES.DEFAULT_SIZE_ERROR")
+    public String DEFAULT_SIZE_ERROR = "&bAutoSell&7► &cStack size cannot be lower than default size";
+
 
     /*
         settings
