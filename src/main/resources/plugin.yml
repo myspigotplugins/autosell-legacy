@@ -1,6 +1,6 @@
 name: AutoSell
 authors: [Shiryu]
-version: 1.1
+version: 1.2
 main: io.github.shiryu.autosell.AutoSell
 api-version: 1.16
 depend: [Vault]
