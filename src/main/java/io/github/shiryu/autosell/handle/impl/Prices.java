@@ -24,7 +24,10 @@ public class Prices implements Manager<Prices.PriceNode> {
         final String[] split = string.split(":");
 
         if (split.length == 2){
-            final Material material = XMaterial.matchXMaterial(split[0]).orElse(null).parseMaterial();
+            final Material material = Material.matchMaterial(split[0]);
+
+            if (material == null) return null;
+
             final int price = Integer.parseInt(split[1]);
 
             return new PriceNode(
