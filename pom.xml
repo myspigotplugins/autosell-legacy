@@ -6,7 +6,7 @@
 
     <groupId>io.github.shiryu.autosell</groupId>
     <artifactId>autosell</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
 
     <build>
         <plugins>

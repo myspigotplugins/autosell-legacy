@@ -33,45 +33,56 @@ public class PlayerPickup implements Listener {
 
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
-        final ItemStack hand = player.getItemInHand();
+        if (AutoSell.getInstance().getConfigs().AUTO_PICKUP_ENABLED){
+            final ItemStack hand = player.getItemInHand();
 
-        final Collection<ItemStack> drops = DropUtil.getInstance().dropsFor(hand, block);
+            final Collection<ItemStack> drops = DropUtil.getInstance().dropsFor(hand, block);
 
-        drops.forEach(item ->{
-            if (InventoryUtil.getInstance().checkFor(player, item) && !AutoSell.getInstance().getConfigs().BLACK_LIST.contains(item.getType().name())){
-                player.getInventory().addItem(
-                        item
-                );
+            drops.forEach(item ->{
+                if (InventoryUtil.getInstance().checkFor(player, item) && !AutoSell.getInstance().getConfigs().BLACK_LIST.contains(item.getType().name())){
+                    player.getInventory().addItem(
+                            item
+                    );
 
-                final AutoPickupEvent pickupEvent = new AutoPickupEvent(
-                        player,
-                        item
-                );
+                    final AutoPickupEvent pickupEvent = new AutoPickupEvent(
+                            player,
+                            item
+                    );
 
-                Bukkit.getPluginManager().callEvent(pickupEvent);
-            }else{
-                player.sendMessage(
-                        new Colored(
-                                AutoSell.getInstance().getConfigs().INVENTORY_FULL
-                        ).value()
-                );
-                return;
-            }
-        });
+                    Bukkit.getPluginManager().callEvent(pickupEvent);
+                }else{
+                    player.sendMessage(
+                            new Colored(
+                                    AutoSell.getInstance().getConfigs().INVENTORY_FULL
+                            ).value()
+                    );
+                    return;
+                }
+            });
 
-        event.setCancelled(true);
-        block.setType(Material.AIR);
+            event.setCancelled(true);
+            block.setType(Material.AIR);
 
-        player.giveExp(event.getExpToDrop());
+            player.giveExp(event.getExpToDrop());
+        }
+    }
+
+    @EventHandler
+    public void itemPickup(@NotNull final PlayerPickupItemEvent event){
+        if (AutoSell.getInstance().getConfigs().AUTO_PICKUP_ENABLED)
+            return;
+
+        autoSellControl(event.getPlayer(), event.getItem().getItemStack());
     }
 
     @EventHandler
     public void playerPickup(final AutoPickupEvent event){
         event.setCancelled(true);
 
-        final Player player = event.getPlayer();
-        final ItemStack item = event.getItem();
+        autoSellControl(event.getPlayer(), event.getItem());
+    }
 
+    private void autoSellControl(@NotNull final Player player, @NotNull final ItemStack item){
         AutoSellAPI.getInstance().findUser(player.getUniqueId()).ifPresent(user ->{
             final List<AutoSellItem> items = user.getItems()
                     .stream()
@@ -99,8 +110,8 @@ public class PlayerPickup implements Listener {
                             player.sendMessage(
                                     new Colored(
                                             AutoSell.getInstance().getConfigs().ITEM_SELL
-                                            .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(x.getMaterial()).orElse(""))
-                                            .replaceAll("%price%", String.valueOf(money))
+                                                    .replaceAll("%item%", AutoSell.getInstance().getNamings().namingOf(x.getMaterial()).orElse(""))
+                                                    .replaceAll("%price%", String.valueOf(money))
                                     ).value()
                             );
                         });
